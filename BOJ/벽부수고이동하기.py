@@ -1,0 +1,65 @@
+n, m = map(int, input().split())
+map = [list(map(int, input())) for _ in range(n)]
+
+start = (0, 0)
+goal = (n - 1, m - 1)
+
+from collections import deque
+# 상 하 좌 우
+dx = [-1, 1, 0, 0]
+dy = [0, 0, 1, -1]
+
+def bfs(start_x, start_y, distance):
+    q = deque()
+    q.append((start_x, start_y, distance))   
+    map[start_x][start_y] = 1
+    while q:
+        now_x, now_y, now_distance = q.popleft()
+        for i in range(4):
+            next_x = now_x + dx[i]
+            next_y = now_y + dy[i]
+            if 0 <= next_x < n and 0 <= next_y < m:
+                if map[next_x][next_y] == 0 :
+                    now_distance += 1
+                    q.append((next_x, next_y, now_distance))
+                    map[next_x][next_y] = 1  
+                    if next_x == n - 1 and next_y == m - 1:
+                        return now_distance + 1
+    return -1 
+
+walls = []
+for i in range(n):
+    for j in range(m):
+        if map[i][j] == 1:
+            tmp_sum = 0
+            for k in range(4):
+                next_i = i + dx[k]
+                next_j = j + dy[k]
+                if 0 <= next_i < n and 0<= next_j < m :
+                    if map[next_i][next_j] == 0:
+                        tmp_sum += 1
+            if tmp_sum >= 2 :
+                walls.append((i, j))
+
+import math
+min_value = math.inf
+
+for wall in walls:
+    x, y = wall  
+    print(wall)  
+    map[x][y] = 0     
+    result = bfs(0, 0, 0)   
+    print(result)
+    if min_value > result and result > 0  :
+        min_value = result
+    map[x][y] = 1
+
+if min_value == math.inf :
+    min_value = -1
+
+print(min_value)
+# print(bfs(0, 0, 0))
+      
+
+  
+
